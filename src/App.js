@@ -13,6 +13,8 @@ import DeadPage from './pages/DeadPage'
 import { MasterGameProvider } from './services/MasterGame';
 import { GameProvider } from './services/Game';
 import { UserProvider } from './services/User';
+//sass --watch style.scss:style.css
+//encapsulation possible nav{li{}a{}} au lieu de nav li {} nav a{}
 
 
 function App() {

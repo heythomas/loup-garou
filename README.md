@@ -22,13 +22,66 @@ Je vous invite à regarder la vidéo de [Human Talks Paris](https://www.youtube.
 Quelques petites questions :
 
 - Résumer en une phrase l'intérêt de Material UI
+Designer rapidement en utilisant le design de google
 - Comment importer `material-ui` dans un fichier ?
+import nom_component from '@material-ui/core/nom_component'
 - Comment une application peut utiliser un thème à travers l'ensemble d'un projet ?
+Grace à MUI theme provider qui va encapsuler tout le contenu (en prenant en paramètre un objet theme fait par nous même)
 - A quoi sert `createMuiTheme` ?
+Il va servir à personnaliser les composants de Material UI
 - A quoi correspond `palette` ?
+Palette va servir à créer des sortes de variables de couleur réutilisables en paramètre sur des éléments render (ex: color="red")
 - Comment re-définir des propriétés ?
+Dans overrides: {} on va pouvoir écraser les propriétés de button par exemple overrides: {MuiButton: {root: {On customise ici}}}
 - A quoi vous fait penser `withStyle` ? Comment l'utiliser ?
+C'est du css, on l'utilise avec les props
 - Reproduire les deux boutons rouge et bleu présentées dans la vidéo.
+
+import React, { Component } from "react";
+
+import { MuiThemeProvider, createMuiTheme, withStyles } from"@material-ui/core/styles";
+
+import Button from "@material-ui/core/Button";
+import { blue } from "@material-ui/core/colors";
+
+class App extends Component {
+  render() {
+    return(
+      <MuiThemeProvider theme={theme}>
+        <div>
+          <Button className={this.props.classes.myLeftButton}>Bonjour</Button>
+          <Button>Drop Database !!</Button>
+        </div>
+      </MuiThemeProvider>
+    )
+  }
+}
+
+const styles = {
+  myLeftButton: {
+    backgroundColor: "blue"
+  }
+}
+
+const theme = createMuiTheme({
+  palette: {
+    primary: blue
+  },
+  typography: {
+    fontSize: 15,
+    fontFamily: "Arial"
+  },
+  overrides: {
+    MuiButton: {
+      root: {
+        backgroundColor: "red",
+        "&:hover": { backgroundColor: "yellow" }
+      }
+    }
+  }
+});
+
+export default withStyles(styles)(App)
 
 
 ## Styled Components
@@ -38,11 +91,72 @@ De la même manière, voici une [vidéo](https://www.youtube.com/watch?v=mS0UKNB
 Quelques petites questions :
 
 - Qu'est-ce que le CSS-in-JS ?
+Le css in js permet de faciliter l'écriture du css, avec une syntaxe plus claire, l'utilisation de variables, des calculs, rien de plus n'est faisable.
+Cela permet de gerer plus facilement les selecteurs via des classes dynamiques, d'utiliser des components, d'utiliser des scopes pour retourner les components.
+Cela permet par la même d'éviter des problèmes comme l'effet de bord
 - Qu'est-ce que sont les tagged templates (délimitées par des backticks) ?
+C'est un moyen d'écrire des propriétés plus facilement
+
 - Donner un exemple d'un bouton personnalisé avec et sans les tagged templates ?
+
+- Je n'ai pas testé mais je donne l'idée globale
+
+- Avec styled components
+import styled from 'styled-components'
+
+function customStyle(props) {
+  return `
+    background-color: ${props.disabled ? 'chartreuse' : 'blue'};
+    cursor: ${props.disabled ? 'not-allowed' : 'pointer'};
+  `
+}
+
+const Button1 = styled.button`
+  color: green;
+  
+  ${customStyle};
+`
+
+- Sans Style components
+en css
+.myButton{
+    color:green;
+}
+
+.disabled{
+    background-color:chartreuse;
+    cursor:not-allowed;
+}
+
+.enabled{
+    background-color:blue;
+    cursor:pointer;
+}
+
+en js
+function isEnabled(props) {
+  return(
+    props.disabled ? disabled : enabled;
+  )
+}
+
+render(){
+    return(
+        <Button className={isEnabled()} />
+    )
+}
+
 - Comment utilise-t-on les props dans cette librarie ?
+
+Les props servent en quelque sorte de transporteurs du styledcomponent au DOM
+
 - Reprendre l'exemple du Material UI avec styled-components; l'écrire avec la composition et avec l'héritage.
+
+
+
 - Quelles sont les fonctions du contexte de styled-components ?
+
+Ce contexte permet de créer et gérer un thème
 
 
 ## Mise en place du design
@@ -64,12 +178,57 @@ Activer l'authentification anonyme dans la console de Firebase.
 ### Découverte du code
 
 - Le code utilise des fonctions plutôt que des classes. Ecrire un bouton sous la forme d'une classe et d'une fonction. Retrouver les équivalences entre les méthodes des composants (telles que setState) et celles des fonctions ?
+
+- Pas fait
+
 - Comment récupérer les props dans une fonction ?
+
+avec 'const ...= (props) => {}'
+
 - Dans `App.js`, identifier les différents producteurs de données. Retrouver leur définition. Quelles données partagent-ils à l'ensemble de l'application ?
+
+Producer :
+CodePage -> Permet d'ajouter notre nom dans l'instance de la partie en cours (rejoindre)
+CreatePage -> Permet de créer une instance de partie
+SpellPage -> Permet d'envoyer une action de sorcière, tuer, ressuciter à la partie
+
+Page classiques :
+StartPage
+
+Consumer :
+Toutes les autres pages...
+
+
 - Identifier les différentes pages de l'application. Décrire à l'aide d'une phrase le rôle de chacune d'entre elles.
+
+La start page est la page permettant de choisir entre créer une partie(page CreatePage) ou en rejoindre une autre via le code du créateur (qui est sur createpage), on renseigne aussi notre pseudo (cette page est CodePage).
+
+End page comme son nom l'indique est la page de fin de partie qui annonce le vainqueur
+
+La nightpage informe du passage du jeu en mode nuit (avec les mécaniques de jeu qui en découlent)
+
+AlivePage retourne notre role
+
+ResultsPage retourne le résultat du vote et le joueur mort (après avoir attendu le vote de tout le monde)
+
+SpellPage retourne des boutons pour effectuer les sorts de la sorciere si notre personnage en est une
+
+DeadPage retourne un message indiquant la mort de notre personnage
+
+CastPage vérifie si un joueur est encore en vie
+
 - Pourquoi voit-on sur plusieurs pages "Chargement du master game en cours" ?
+
+Tant que la partie n'est pas commencée, Game.js va afficher ce message pour indiquer qu'il n'y a pas d'erreurs mais que la partie n'est pas lancée.
+Ca fonctionne comme une sorte de try catch...
+
 - Avec les classes, nous utilisions `withMyContext` pour s'inscrire aux données d'un provider. Identifier dans services/Game.js la fonction qui joue désormais ce rôle.
+
+
+
 - Dans `CodePage`, rappeler comment un formulaire gère les champs de remplissage des données.o
+
+A chaque changement dans le formulaire, des variables se mettent à jour (via une fonction event), quand on envoie le formulaire on récupère juste la valeur de ces variables sans charger une nouvelle page (ce qui signifierait une perte des infomations)
 
 ### Reprise du design
 
@@ -83,11 +242,29 @@ Activer l'authentification anonyme dans la console de Firebase.
 ### Utilisation de Firebase
 
 - Dans 'User.js', comment fait-on pour garder une trace persistente de l'application, même lorsqu'on rafraichit la page ? Comment reconnait-on l'utilisateur lorsqu'il revient dans l'application ?
+
+On place son pseudo dans un context pour la session actuelle, deux mécanismes sont mis en place pour stocker l'information de façon pérenne, firebase va stocker dès la connexion un identifiant tout en enregistrant ce même identifiant dans les cookies de l'utilisateur, ainsi a chaque tentative de connexion, l'app va vérifier si quelque chose existe dans les cookies et si ce quelque chose correspond à une entrée dans la BDD.
+
 - Dans Firebase, nous ne pouvons pas ajouter des champs à un utilisateur. Par conséquent, nous devons créer une collection d'utilisateurs et synchroniser les utilisateurs avec cette table. Expliquer où est-ce que cette synchronisation a lieu.
+
+Cette synchronisation à lieu
+
 - A votre avis, à quoi sert useEffect ?
+
+
+
 - A quoi sert la fonction `unsubscribe` utilisée dans les `useEffect` de `User.js` ?
+
+
+
 - Décrire les trois valeurs de retour de `UseUser`.
+
+
+
 - Combien de collections dans Firebase pouvez-vous identifier ? A quoi correspondent les `doc` ?
+
+
+
 
 ### Contribuer à l'application
 
