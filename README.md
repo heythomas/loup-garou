@@ -22,21 +22,22 @@ Je vous invite à regarder la vidéo de [Human Talks Paris](https://www.youtube.
 Quelques petites questions :
 
 - Résumer en une phrase l'intérêt de Material UI
-Designer rapidement en utilisant le design de google
+Designer rapidement en utilisant le design de google qui est abouti, cela évite de repartir de zéro pour faire chaque bouton etc...
 - Comment importer `material-ui` dans un fichier ?
-import nom_component from '@material-ui/core/nom_component'
+`import nom_component from '@material-ui/core/nom_component'`
 - Comment une application peut utiliser un thème à travers l'ensemble d'un projet ?
-Grace à MUI theme provider qui va encapsuler tout le contenu (en prenant en paramètre un objet theme fait par nous même)
+Grace à `MUI theme provider` qui va encapsuler tout le contenu (en prenant en paramètre un objet theme fait par nous même)
 - A quoi sert `createMuiTheme` ?
-Il va servir à personnaliser les composants de Material UI
+Il va servir à personnaliser les composants de Material UI pour `MuiThemeProvider`
 - A quoi correspond `palette` ?
 Palette va servir à créer des sortes de variables de couleur réutilisables en paramètre sur des éléments render (ex: color="red")
 - Comment re-définir des propriétés ?
-Dans overrides: {} on va pouvoir écraser les propriétés de button par exemple overrides: {MuiButton: {root: {On customise ici}}}
+Dans `overrides: {}` on va pouvoir écraser les propriétés de button par exemple overrides: `{MuiButton: {root: {On customise ici}}}`
 - A quoi vous fait penser `withStyle` ? Comment l'utiliser ?
 C'est du css, on l'utilise avec les props
 - Reproduire les deux boutons rouge et bleu présentées dans la vidéo.
 
+`
 import React, { Component } from "react";
 
 import { MuiThemeProvider, createMuiTheme, withStyles } from"@material-ui/core/styles";
@@ -82,7 +83,7 @@ const theme = createMuiTheme({
 });
 
 export default withStyles(styles)(App)
-
+`
 
 ## Styled Components
 
@@ -95,7 +96,8 @@ Le css in js permet de faciliter l'écriture du css, avec une syntaxe plus clair
 Cela permet de gerer plus facilement les selecteurs via des classes dynamiques, d'utiliser des components, d'utiliser des scopes pour retourner les components.
 Cela permet par la même d'éviter des problèmes comme l'effet de bord
 - Qu'est-ce que sont les tagged templates (délimitées par des backticks) ?
-C'est un moyen d'écrire des propriétés plus facilement
+
+C'est un bon moyen d'écrire des propriétés plus facilement
 
 - Donner un exemple d'un bouton personnalisé avec et sans les tagged templates ?
 
@@ -152,11 +154,72 @@ Les props servent en quelque sorte de transporteurs du styledcomponent au DOM
 
 - Reprendre l'exemple du Material UI avec styled-components; l'écrire avec la composition et avec l'héritage.
 
+Fait avec la composition :
 
+`
+import React from 'react';
+import styled from 'styled-components'
+
+const style = \`
+background-color:blue;
+\`
+
+const ButtonBlue = styled.button\`
+  ${style}
+\`
+
+const ButtonRed = styled.button\`
+${style}
+
+background-color: red
+\`
+
+function App(props){
+  return (
+    <div>
+      <ButtonBlue>Hello</ButtonBlue>
+      <ButtonGreen>World !</ButtonGreen>
+    </div>
+  );
+}
+
+export default (App);
+`
+
+
+Fait avec l'héritage :
+
+`
+import React from 'react';
+import styled from 'styled-components'
+
+const ButtonBlue = styled.button\`
+border:3px solid red;
+border-radius:10px;
+
+  background-color: blue;
+\`
+
+const ButtonGreen = styled(ButtonBlue)\`
+background-color: green
+\`
+
+function App(props) {
+  return (
+    <div>
+      <ButtonBlue>Hello</ButtonBlue>
+      <ButtonGreen>World !</ButtonGreen>
+    </div>
+  );
+}
+
+
+export default (App);
+`
 
 - Quelles sont les fonctions du contexte de styled-components ?
 
-Ce contexte permet de créer et gérer un thème
+Ce contexte permet de créer et gérer un thème (= ensemble de components)
 
 
 ## Mise en place du design
@@ -179,7 +242,25 @@ Activer l'authentification anonyme dans la console de Firebase.
 
 - Le code utilise des fonctions plutôt que des classes. Ecrire un bouton sous la forme d'une classe et d'une fonction. Retrouver les équivalences entre les méthodes des composants (telles que setState) et celles des fonctions ?
 
-- Pas fait
+Le bouton sous forme de classe :
+`
+class Button extends React.component{
+  render{
+    const {onClick, children} = this.props;
+    return(
+      <button onClick={onClick}>{children}</button>
+    );
+  }
+}
+`
+
+Le bouton sous forme de fonction :
+const Button = (props) => {
+  const {onClick, children} = props;
+  return(
+    <button onClick={onClick}>{children</button>
+  );
+}
 
 - Comment récupérer les props dans une fonction ?
 
@@ -188,9 +269,9 @@ avec 'const ...= (props) => {}'
 - Dans `App.js`, identifier les différents producteurs de données. Retrouver leur définition. Quelles données partagent-ils à l'ensemble de l'application ?
 
 Producer :
-CodePage -> Permet d'ajouter notre nom dans l'instance de la partie en cours (rejoindre)
+CodePage -> Permet d'ajouter notre nom dans l'instance de la partie en cours (rejoindre une partie en gros)
 CreatePage -> Permet de créer une instance de partie
-SpellPage -> Permet d'envoyer une action de sorcière, tuer, ressuciter à la partie
+SpellPage -> Permet d'envoyer une action de sorcière, tuer, ressuciter
 
 Page classiques :
 StartPage
@@ -203,11 +284,11 @@ Toutes les autres pages...
 
 La start page est la page permettant de choisir entre créer une partie(page CreatePage) ou en rejoindre une autre via le code du créateur (qui est sur createpage), on renseigne aussi notre pseudo (cette page est CodePage).
 
-End page comme son nom l'indique est la page de fin de partie qui annonce le vainqueur
+End page comme son nom l'indique est la page de fin de partie qui annonce le(s) vainqueur(s)
 
 La nightpage informe du passage du jeu en mode nuit (avec les mécaniques de jeu qui en découlent)
 
-AlivePage retourne notre role
+AlivePage retourne notre role quand on est vivant et que ce n'est pas à nous d'agir
 
 ResultsPage retourne le résultat du vote et le joueur mort (après avoir attendu le vote de tout le monde)
 
@@ -215,20 +296,21 @@ SpellPage retourne des boutons pour effectuer les sorts de la sorciere si notre 
 
 DeadPage retourne un message indiquant la mort de notre personnage
 
-CastPage vérifie si un joueur est encore en vie
+CastPage est la page pour voter pour la mort d'un joueur
 
 - Pourquoi voit-on sur plusieurs pages "Chargement du master game en cours" ?
 
-Tant que la partie n'est pas commencée, Game.js va afficher ce message pour indiquer qu'il n'y a pas d'erreurs mais que la partie n'est pas lancée.
+Tant que la partie n'est pas commencée, Game.js va afficher ce message pour indiquer qu'il n'y a pas d'erreurs mais que la partie n'est pas lancée ni crée par nous, une fois une partie crée on a plus qu'un message, en gros 1 message car on a pas rejoind et un autre car on a pas créé de partie.
+
 Ca fonctionne comme une sorte de try catch...
 
 - Avec les classes, nous utilisions `withMyContext` pour s'inscrire aux données d'un provider. Identifier dans services/Game.js la fonction qui joue désormais ce rôle.
 
-
+La fonction qui remplace `withMyContext` est `useGame` désormais.
 
 - Dans `CodePage`, rappeler comment un formulaire gère les champs de remplissage des données.o
 
-A chaque changement dans le formulaire, des variables se mettent à jour (via une fonction event), quand on envoie le formulaire on récupère juste la valeur de ces variables sans charger une nouvelle page (ce qui signifierait une perte des infomations)
+A chaque changement dans le formulaire, des variables (state) se mettent à jour (via une fonction event), quand on envoie le formulaire on récupère juste la valeur de ces variables sans charger une nouvelle page (ce qui signifierait une perte des infomations)
 
 ### Reprise du design
 
@@ -247,21 +329,22 @@ On place son pseudo dans un context pour la session actuelle, deux mécanismes s
 
 - Dans Firebase, nous ne pouvons pas ajouter des champs à un utilisateur. Par conséquent, nous devons créer une collection d'utilisateurs et synchroniser les utilisateurs avec cette table. Expliquer où est-ce que cette synchronisation a lieu.
 
-Cette synchronisation à lieu
+Cette synchronisation à lieu dans useUser, on teste si l'id de l'utilisateur correspond à un fichier firebase.
 
 - A votre avis, à quoi sert useEffect ?
 
-
+useEffect sert à commencer à réaliser des actions en chargeant la page en avance pendant que la requête asynchrone se fait vers firebase, ainsi l'utilisateur sera "occupé" pendant cette requête.
 
 - A quoi sert la fonction `unsubscribe` utilisée dans les `useEffect` de `User.js` ?
 
-
+`unsubscribe` permet de couper la connexion avec firebase une fois les actions réalisées afin de ne pas surcharger le réseau.
 
 - Décrire les trois valeurs de retour de `UseUser`.
-
-
+On peut avoir `error` qui donne les informations sur une erreur (si il y en a une), `loading` qui indique si des données sont encore en attente (chargement) et `user`
 
 - Combien de collections dans Firebase pouvez-vous identifier ? A quoi correspondent les `doc` ?
+On a 2 collections dans firebase `users` (les utilisateurs) et `game` (les parties).
+Les docs sont des entrées dans une collection, exemple `users` est une collection et `Thomas` est un doc, c'est comme une entrée dans une table SQL en très gros.
 
 
 
