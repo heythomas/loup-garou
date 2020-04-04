@@ -315,10 +315,15 @@ A chaque changement dans le formulaire, des variables (state) se mettent à jour
 ### Reprise du design
 
 - En utilisant styled-components, reprendre le design du composant Button.
+Fait
 - Votre nouveau bouton peut alors être utilisé pour améliorer l'affichage de la page `StartPage`.
-- Ajouter un header et un footer sur toutes les pages de l'application. 
+Fait
+- Ajouter un header et un footer sur toutes les pages de l'application.
+Fait
 - Réaliser le design du formulaire de de `CodePage`, utilisé pour rejoindre l'application.
+Fait
 - Faire de même avec `CreatePage`.
+Fait
 
 
 ### Utilisation de Firebase
