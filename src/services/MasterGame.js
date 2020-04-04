@@ -76,7 +76,7 @@ export const MasterGameProvider = props => {
     return <div>Erreur... {error}</div>;
   }
   if (loading) {
-    return <div>Chargement du master game en cours...</div>;
+    return <div></div>;
   }
 
   const {children} = props;
